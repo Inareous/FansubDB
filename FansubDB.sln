@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FansubDB", "FansubDB\FansubDB.csproj", "{AB3B514C-1358-4450-AB48-46F89D7E5AD9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB3B514C-1358-4450-AB48-46F89D7E5AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB3B514C-1358-4450-AB48-46F89D7E5AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB3B514C-1358-4450-AB48-46F89D7E5AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB3B514C-1358-4450-AB48-46F89D7E5AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF1BFFEC-5257-4C8C-A49A-E4BF581C2EA3}
+	EndGlobalSection
+EndGlobal
