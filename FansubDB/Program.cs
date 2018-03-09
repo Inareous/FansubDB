@@ -20,7 +20,7 @@ namespace FansubDB
             var db = new LiteDatabase(@"Database.db"); // unused for now
             var updater = new DBProcessor(db);
             var collection = db.GetCollection<Entry>("entries");
-            db.DropCollection("entries"); // debugging purposes
+//            db.DropCollection("entries"); // debugging purposes
             Console.WriteLine("Configuring Crawler");
             const string link = "https://oploverz.id";
             const int startIndex = 1;
@@ -55,6 +55,7 @@ namespace FansubDB
             Console.WriteLine($"Total new link added : {linkCount}");
             Console.WriteLine($"Total collection not filled : {collection.Count(x => x.IsFilled.Equals(false))}");
 //            var notFilled = collection.Find(x => x.IsFilled.Equals(false)); // debug
+//            var tryFilter = updater.FilterBySite(false, true, false); // debug
             Console.WriteLine($"Current collection count : {collection.Count()}");
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadLine();

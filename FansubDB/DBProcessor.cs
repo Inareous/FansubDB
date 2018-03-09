@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace FansubDB
 {
     class DBProcessor
     {
-        private LiteDatabase Db { get;}
+        private LiteDatabase Db { get; }
 
         public DBProcessor(LiteDatabase db)
         {
@@ -23,20 +24,19 @@ namespace FansubDB
 //              if (collection.Exists(Query.And(Query.EQ("PageUrl", entries[i].PageUrl), Query.EQ("TitleAndChapter", entries[i].TitleAndChapter))))
                 var item = collection.FindOne(x =>
                     x.PageUrl.Equals(entries[i].PageUrl) && x.TitleAndChapter.Equals(entries[i].TitleAndChapter));
-                if (item!=null)
+                if (item != null)
                 {
-                    if (item.IsFilled.Equals(false) && entries[i].IsFilled.Equals(true) || item.IsConverted.Equals(false) && entries[i].IsConverted.Equals(true))
+                    if (item.IsFilled.Equals(false) && entries[i].IsFilled.Equals(true) ||
+                        item.IsConverted.Equals(false) && entries[i].IsConverted.Equals(true))
                     {
                         collection.Update(item.Id, entries[i]);
                     }
+
                     entries.RemoveAt(i);
                 }
             }
-            collection.InsertBulk(entries);
-        }
 
-        public void Filter(List<Entry> entries)
-        {
+            collection.InsertBulk(entries);
         }
     }
 }

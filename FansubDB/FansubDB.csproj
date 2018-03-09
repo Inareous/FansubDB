@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBFIlter.cs" />
     <Compile Include="DBProcessor.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Program.cs" />
