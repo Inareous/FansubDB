@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -52,14 +53,14 @@ namespace FansubDB
                 "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; EN; rv:11.0) like Gecko");
             Connection.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "ISO-8859-1");
             #endregion
-            var Tasks = new List<Task>();
+            var tasks = new List<Task>();
             for (var i = startIndex; i <= lastIndex; i++)
             {
                 var index = i.ToString();
-                Tasks.Add(Task.Run(() => StartPageCrawlerAsync(baseurl, index)));
+                tasks.Add(Task.Run(() => StartPageCrawlerAsync(baseurl, index)));
             }
 
-            Task.WaitAll(Tasks.ToArray());
+            Task.WaitAll(tasks.ToArray());
             //StartPageCrawlerAsync(baseurl, lastIndex.ToString()).ConfigureAwait(true); // For debugging purpose
         }
 
@@ -251,27 +252,68 @@ namespace FansubDB
                             node = doc.QuerySelectorAll("div[class^='download-eps']>" +
                                                         "ul>" +
                                                         "li");
-                            foreach (var actualList in node)
+                            var pagetype = 1;
+                            if (!node.Any())
                             {
-                                var fileType = actualList.QuerySelector("span").TextContent;
-                                var links = new List<Link>();
-                                var linkContainer = actualList.QuerySelectorAll("a");
-                                try
-                                {
-                                    links.AddRange(
-                                        from link in linkContainer
-                                        let dl = link.GetAttribute("href")
-                                        let site = link.TextContent
-                                        select new Link(dl, site));
-                                }
-                                catch (Exception)
-                                {
-                                    // ignored
-                                }
-
-                                startEntry.Download.FileType.Add(new FileType(fileType, links));
-                                startEntry.IsFilled = true;
+                                pagetype = 2;
                             }
+                            switch (pagetype)
+                            {
+                                case 1:
+                                    foreach (var actualList in node)
+                                    {
+                                        var fileType = actualList.QuerySelector("span").TextContent;
+                                        var links = new List<Link>();
+                                        var linkContainer = actualList.QuerySelectorAll("a");
+                                        try
+                                        {
+                                            links.AddRange(
+                                                from link in linkContainer
+                                                let dl = link.GetAttribute("href")
+                                                let site = link.TextContent
+                                                select new Link(dl, site));
+                                        }
+                                        catch (Exception)
+                                        {
+                                            // ignored
+                                        }
+
+                                        startEntry.Download.FileType.Add(new FileType(fileType, links));
+                                        startEntry.IsFilled = true;
+                                    }
+                                    break;
+                                case 2:
+                                    var nodeLink = doc.QuerySelectorAll("div[class^='soraddl op-download']>" +
+                                                                        "div[class^='soraurl list-download']");
+                                    var nodeTitle = doc.QuerySelectorAll("div[class^='soraddl op-download']>" +
+                                                                         "div[class^='sorattl title-download']");
+                                    for (var listIndex = 0; listIndex < nodeLink.Length; listIndex++)
+                                    {
+                                        var fileType = nodeTitle[listIndex].TextContent;
+                                        var links = new List<Link>();
+                                        var aLink = nodeLink[listIndex].QuerySelectorAll("a");
+                                        try
+                                        {
+
+                                            links.AddRange(
+                                                from link in aLink
+                                                let dl = link.GetAttribute("href")
+                                                let site = link.TextContent
+                                                select new Link(dl, site));
+                                        }
+                                        catch (Exception)
+                                        {
+                                            //ignored
+                                        }
+
+
+                                        startEntry.Download.FileType.Add(new FileType(fileType, links));
+                                        startEntry.IsFilled = true;
+                                    }
+
+                                    break;
+                            }
+                            
                         }
                         return;
 

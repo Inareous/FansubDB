@@ -1,27 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using LiteDB;
 
 namespace FansubDB
 {
     class Entry
     {
-            public Entry(string website, string tnc, string pageUrl)
-            {
-                Website = website;
-                TitleAndChapter = tnc;
-                PageUrl = pageUrl;
-            }
+        public Entry()
+        {
+            // Empty || Default constructor for LiteDB
+        }
 
-            public string Website { get; set; }
-            public string TitleAndChapter { get; set; }
-            public string PageUrl { get; set; }
+        public Entry(string website, string tnc, string pageUrl)
+        {
+            Website = website;
+            TitleAndChapter = tnc;
+            PageUrl = pageUrl;
+        }
 
-            public Download Download { get; set; } = new Download();
 
-            public bool IsFilled { get; set; }
+        [BsonId] public ObjectId Id { get; set; }
+
+        public string Website { get; set; }
+        public string TitleAndChapter { get; set; }
+        public string PageUrl { get; set; }
+
+        public Download Download { get; set; } = new Download();
+
+        public bool IsFilled { get; set; }
+        public bool IsConverted { get; set; }
     }
 
     internal class Download
@@ -31,6 +37,11 @@ namespace FansubDB
 
     internal class FileType
     {
+        public FileType()
+        {
+            // Empty || Default constructor for LiteDB
+        }
+
         public FileType(string file, List<Link> links)
         {
             File = file;
@@ -44,13 +55,18 @@ namespace FansubDB
 
     internal class Link
     {
-        public string Site;
-        public string Url;
+        public Link()
+        {
+            // Empty || Default constructor for LiteDB
+        }
 
         public Link(string url, string site)
         {
             Url = url;
             Site = site;
         }
+
+        public string Site;
+        public string Url;
     }
 }
