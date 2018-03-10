@@ -26,7 +26,7 @@ namespace FansubDB
             const int startIndex = 1;
             const int endIndex = 10;
             Console.WriteLine("Starting Crawler");
-            Scraper.Scrape(link, startIndex, endIndex);
+            Scraper.DoScrape(link, startIndex, endIndex);
             Console.WriteLine("Creating Nyan-API Call");
 
             #region Populating Links To Call
@@ -46,16 +46,26 @@ namespace FansubDB
             Console.WriteLine("Updating Links\n");
             updater.Insert(Entries);
             var linkCount = 0;
+            var linknotFilled = 0;
             foreach (var entry in Entries)
             foreach (var type in entry.Download.FileType)
-            foreach (var dummy in type.Link)
+            foreach (var li in type.Link)
+            {
                 linkCount++;
+                if (!li.IsConverted)
+                {
+                    linknotFilled++;
+                }
+            }
+
+
             Console.WriteLine("Result :\n");
             Console.WriteLine($"Total entry added : {Entries.Count}");
             Console.WriteLine($"Total new link added : {linkCount}");
+            Console.WriteLine($"Total link not converted in db : {linknotFilled}");
             Console.WriteLine($"Total collection not filled : {collection.Count(x => x.IsFilled.Equals(false))}");
-//            var notFilled = collection.Find(x => x.IsFilled.Equals(false)); // debug
-//            var tryFilter = updater.FilterBySite(false, true, false); // debug
+            //            var notFilled = collection.Find(x => x.IsFilled.Equals(false)); // debug
+            //            var tryFilter = updater.FilterBySite(false, true, false); // debug
             Console.WriteLine($"Current collection count : {collection.Count()}");
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadLine();

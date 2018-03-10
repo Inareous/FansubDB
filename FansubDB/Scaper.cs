@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.Dom.Html;
@@ -36,7 +37,22 @@ namespace FansubDB
         private static readonly HttpClient Connection = new HttpClient(Handler);
 
 
-        public static void Scrape(string baseurl, int startIndex, int lastIndex)
+        public static void DoScrape(string baseurl, int startIndex, int lastIndex)
+        {
+            Task task;
+            Console.Write("Crawling");
+            task = Task.Run(async () => { Scrape(baseurl, startIndex, lastIndex); });
+            while (!task.IsCompleted)
+            {
+                Console.Write(". ");
+                Thread.Sleep(5000); // 5 sec
+            }
+            Console.Write("\n");
+            Task.WaitAll(task);
+        }
+
+
+        public static async Task Scrape(string baseurl, int startIndex, int lastIndex)
         {
 
             #region Connection Configuration
@@ -176,7 +192,7 @@ namespace FansubDB
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine($"\n{e.Message}");
                 if (e.InnerException != null) Console.WriteLine(e.InnerException.Message);
             }
         }
@@ -369,7 +385,7 @@ namespace FansubDB
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine($"\n{e.Message}");
                 if (e.InnerException != null) Console.WriteLine(e.InnerException.Message);
             }
         }

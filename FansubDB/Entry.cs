@@ -66,7 +66,8 @@ namespace FansubDB
             Site = site;
         }
 
-        public string Site;
-        public string Url;
+        public string Site { get; set; }
+        public string Url { get; set; }
+        public bool IsConverted { get; set; } = false;
     }
 }

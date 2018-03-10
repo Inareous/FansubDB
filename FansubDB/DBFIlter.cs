@@ -56,7 +56,7 @@ namespace FansubDB
             result.AddRange(collection.Find(x => x.TitleAndChapter.Contains(name)));
         }
 
-        public void FilterByURL(string link) // add last
+        public void FilterByURLExist(string link) // add last
         {
             result = (List<Entry>) result.Where(
                 x => x.Download.FileType.All(y => y.Link.All(z => z.Url.Contains(link))));
