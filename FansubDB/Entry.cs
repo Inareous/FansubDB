@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LiteDB;
 
 namespace FansubDB
@@ -8,13 +9,18 @@ namespace FansubDB
         public Entry()
         {
             // Empty || Default constructor for LiteDB
+            Id = ObjectId.NewObjectId();
+            DateEntryCreated = Id.CreationTime;
         }
 
-        public Entry(string website, string tnc, string pageUrl)
+        public Entry(string website, string tnc, string pageUrl, DateTime date)
         {
             Website = website;
             TitleAndChapter = tnc;
             PageUrl = pageUrl;
+            DatePageCreated = date;
+            Id = ObjectId.NewObjectId();
+            DateEntryCreated = Id.CreationTime;
         }
 
 
@@ -23,6 +29,10 @@ namespace FansubDB
         public string Website { get; set; }
         public string TitleAndChapter { get; set; }
         public string PageUrl { get; set; }
+        public DateTime DatePageCreated { get; set; }
+
+        public DateTime DateEntryCreated { get; set; }
+
 
         public Download Download { get; set; } = new Download();
 
@@ -64,6 +74,13 @@ namespace FansubDB
         {
             Url = url;
             Site = site;
+        }
+
+        public Link(string url, string site, bool isConverted)
+        {
+            Url = url;
+            Site = site;
+            IsConverted = isConverted;
         }
 
         public string Site { get; set; }

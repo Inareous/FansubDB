@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -118,9 +119,14 @@ namespace FansubDB
                                                         "li");
                             foreach (var list in node)
                             {
+                                var x = list.QuerySelectorAll("span[class^='date meta-item'] span");
+                                var dateHolder = x[x.Length-1].TextContent;
+                                var date = DateTime.ParseExact(dateHolder, "MMMM d, yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+//                                DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
                                 var tnc = list.QuerySelector("a").TextContent;
                                 var urlPage = list.QuerySelector("a").GetAttribute("href");
-                                var startEntry = new Entry(baseurl, tnc, urlPage);
+                                var startEntry = new Entry(baseurl, tnc, urlPage, date);
                                 await StartDownloadLinkCrawlerAsync(baseurl, startEntry).ConfigureAwait(true);
                                 Program.Entries.Add(startEntry);
                             }
@@ -145,9 +151,11 @@ namespace FansubDB
                                                         "div[class^='item-details']");
                             foreach (var list in node)
                             {
+                                var x = list.QuerySelector("time").TextContent;
+                                var date = DateTime.ParseExact(x, "MMMM d, yyyy", CultureInfo.CreateSpecificCulture("en-US"));
                                 var tnc = list.QuerySelector("a").GetAttribute("title");
                                 var urlPage = list.QuerySelector("a").GetAttribute("href");
-                                var startEntry = new Entry(baseurl, tnc, urlPage);
+                                var startEntry = new Entry(baseurl, tnc, urlPage,date);
                                 await StartDownloadLinkCrawlerAsync(baseurl, startEntry).ConfigureAwait(true);
                                 Program.Entries.Add(startEntry);
                             }
@@ -170,9 +178,23 @@ namespace FansubDB
                                                         "div[class^='chan']");
                             foreach (var list in node)
                             {
+                                var date = DateTime.Today;
+                                try
+                                {
+                                    var x = list.QuerySelector("div[class^='details'] div[class^='kategori']").TextContent;
+                                    var xSplit = x.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                                    var dateholder = xSplit[0].Replace(" Released on ", "");
+                                    var datesplit = dateholder.Split(' ');
+                                    datesplit[1] = Regex.Replace(datesplit[1],@"\D+", string.Empty);
+                                    dateholder = String.Join(" ", datesplit);
+                                    date = DateTime.ParseExact(dateholder, "MMMM d yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+                                }
+                                catch(Exception)
+                                {
+                                }
                                 var tnc = list.QuerySelector("a").TextContent;
                                 var urlPage = list.QuerySelector("a").GetAttribute("href");
-                                var startEntry = new Entry(baseurl, tnc, urlPage);
+                                var startEntry = new Entry(baseurl, tnc, urlPage,date);
                                 await StartDownloadLinkCrawlerAsync(baseurl, startEntry).ConfigureAwait(true);
                                 Program.Entries.Add(startEntry);
                             }
