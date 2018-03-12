@@ -30,7 +30,7 @@ namespace FansubDB
             UseProxy = false,
             Proxy = null,
             PreAuthenticate = true,
-            UseDefaultCredentials = false,
+            UseDefaultCredentials = true,
             MaxAutomaticRedirections = 4,
             MaxRequestContentBufferSize = Int32.MaxValue,
         };
@@ -40,6 +40,7 @@ namespace FansubDB
 
         public static void DoScrape(string baseurl, int startIndex, int lastIndex)
         {
+            ServicePointManager.DefaultConnectionLimit = 100;
             Task task;
             Console.Write("Crawling");
             task = Task.Run(async () => { Scrape(baseurl, startIndex, lastIndex); });
